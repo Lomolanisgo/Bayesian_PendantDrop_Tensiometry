@@ -1,13 +1,13 @@
 # Generated with SMOP  0.41
 import sys
-sys.path.append('smop\libsmop.py')
+sys.path.append(r'.\smop')
 from datetime import datetime
-import libsmop
+from libsmop import *
 # gen_single_drop.m
 
     #close_('all')
     #clear
-addpath('subs/')
+#addpath('subs/')
     # physical parameters
 sigma=100
 # gen_single_drop.m:7
@@ -49,7 +49,7 @@ volume0prime=volume0 / rneedle ** 3
 # find the initial guess of the droplet shape
 if dot(dot(deltarho,grav),volume0) / (dot(dot(dot(2,pi),sigma),rneedle)) > 0.14:
 # predict the maximum length of the interface (empirical Nagel)
-smax=dot(sqrt(sigmaprime),2.0) / 0.8701
+  smax=dot(sqrt(sigmaprime),2.0) / 0.8701
 # gen_single_drop.m:32
 D,__,w,s=dif1D('cheb',0,smax,N,5,nargout=4)
 # gen_single_drop.m:35

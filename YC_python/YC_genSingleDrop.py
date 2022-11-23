@@ -1,5 +1,9 @@
 from datetime import datetime
 import math as m
+import numpy as np
+import dif1D
+import fit_circle_through_3_points
+
 # physical parameters
 sigma = 100;       # surface tension [mN/m]
 grav = 9.807e3;    # gravitational acceleration [mm/s^2]
@@ -29,10 +33,10 @@ if  deltarho*grav*volume0/(2*m.pi*sigma*rneedle) > 0.14:
     smax = m.sqrt(sigmaprime)*2.0/0.8701
 
     # get the differentation/integration matrices and the grid
-    [D,~,w,s] = dif1D('cheb',0,smax,N,5)
+    D,_,w,s = dif1D('cheb',0,smax,N,5)
 
     # predict the shape of the interface (empirical Nagel)
-    z = -4/3*smax/m.pi*(m.cos(pi*3/4*s/smax))
+    z = -4/3*smax/m.pi*(m.cos(m.pi*3/4*s/smax))
     z = z - max(z)
     r = 4/3*smax/m.pi*(m.sin(m.pi*3/4*s/smax))
     psi = m.pi*3/4*s/smax
@@ -46,20 +50,20 @@ else:
     rts = m.roots([pi/6 0 pi/2 -volume0prime])    
     h0 = m.real(rts(3))
     
-    [Rguess,xcyc] = fit_circle_through_3_points([1 0; 0 -h0; -1 0])
+    Rguess,xcyc = fit_circle_through_3_points([1 0; 0 -h0; -1 0])
     
     # get the opening angle of the circle
     if xcyc(2) < 0:
       theta = acos(1/Rguess)
     else:
       theta = -acos(1/Rguess)
-    end
+    
         
     # predict the maximum length of the interface
     smax = Rguess*(2*theta+pi)
 
     # get the differentation/integration matrices and the grid
-    [D,~,w,s] = dif1D('fd',0,smax,N,5)
+    D,_,w,s = dif1D('fd',0,smax,N,5)
     
     # start- and end-point of the current radial line
     dtheta = linspace(-m.atanhpi/2,theta,N)
@@ -73,9 +77,9 @@ else:
     p0 = 2*Rguess*sigmaprime;   # predict the pressure
     
     # get the differentation/integration matrices and the grid
-    [D,~,w,s] = dif1D('cheb',0,smax,N,5)
+    D,_,w,s = dif1D('cheb',0,smax,N,5)
     
-end
+
 
 # initialize some variables 
 Z = zeros(N);            # matrix filled with zeros
