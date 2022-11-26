@@ -57,7 +57,8 @@ else:
     rts = m.roots([pi/6 ,0 ,pi/2 ,-volume0prime])    
     h0 = m.real(rts(3))
     
-    Rguess,xcyc = fit_circle_through_3_points([1, 0; 0, -h0; -1, 0])
+    ABC=np.array(np.vstack(((1,0),(0,-h0),(-1,0))))
+    Rguess,xcyc = fit_circle_through_3_points(ABC)
     
     # get the opening angle of the circle
     if xcyc(2) < 0:
@@ -95,9 +96,6 @@ ZL = np.zeros(N);         # line completely filled with zeros
 u = np.ones((3*N+2,1)); 
 b = np.ones((3*N+2,1)); # solution vector and right hand side
 iter = 0; crash = 0; 
-
-
-
 
 while rms(u) > 1e-10:
 
@@ -194,16 +192,18 @@ while rms(u) > 1e-10:
 
 
 # calculate the Chebyshev coefficients
-coefr = fchebt(r,Ncheb,0); 
-coefz = fchebt(z,Ncheb,0); 
+# Dont need this part to plot the drop!!!!!!!
+# 'I'm so stupid!' ------Charles Leclerc
+#coefr = fchebt(r,Ncheb,0); 
+#coefz = fchebt(z,Ncheb,0); 
 
 toc=datetime.now()
 print('Elapsed time: %f seconds' % (toc-tic).total_seconds())
 
 # compute volume and area (scaled back to dimensionfull)
-disp(['volume = ', num2str(rneedle^3*pi*w*(r.^2.*sin(psi))/C,12),' mm^3']);
-disp(['area = ', num2str(rneedle^2*pi*2*w*(r)/C,12),' mm^2']);
-disp(['pressure = ', num2str(deltarho*grav*rneedle*p0,12),' Pa']);
+print('volume = ', (rneedle^3*pi*w*(r**2*np.sin(psi))/C,12),' mm^3')
+print('area = ', (rneedle^2*pi*2*w*(r)/C,12),' mm^2')
+print('pressure = ', (deltarho*grav*rneedle*p0,12),' Pa')
 
 # % plot the shape of the drop on the numerical grid
 # figure; hold on
