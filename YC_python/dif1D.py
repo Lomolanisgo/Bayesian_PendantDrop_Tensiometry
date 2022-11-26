@@ -16,7 +16,7 @@ def dif1D(type,s0,L,N,pts):
         s,dd = fddif(N,2,pts); 
         s=s*scale; 
         d=(d/scale); 
-        dd=dd/scale^2; 
+        dd=dd/scale**2; 
         s=(s-s[0]+s0).toarray()
         d = np.full(d)
         w=([np.diff(s.T),0]+[0,np.diff(s.T)])/2
@@ -27,11 +27,15 @@ def dif1D(type,s0,L,N,pts):
         dd=DM[:,:,1]
         s=s*scale
         d=d/scale 
-        dd=dd/scale^2
+        dd=dd/scale**2
         s=s-s[0]+s0
         w=L*clencurt(N)/2
     else:
         print('Wrong Type')
+        d=None
+        dd= None
+        w= None
+        s= None
     return[d,dd,w,s]
 
 def fddif(N,order,pts):#Done
