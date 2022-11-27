@@ -5,6 +5,9 @@ import dif1D
 import fit_circle_through_3_points
 import scipy.sparse
 from YC_fchebt import fchebt
+from scipy.interpolate import interp1d
+import matplotlib.pyplot as plt
+
 
 def rms(y) :
     rms = np.sqrt(np.mean(y**2))
@@ -201,9 +204,9 @@ toc=datetime.now()
 print('Elapsed time: %f seconds' % (toc-tic).total_seconds())
 
 # compute volume and area (scaled back to dimensionfull)
-print('volume = ', (rneedle^3*pi*w*(r**2*np.sin(psi))/C,12),' mm^3')
-print('area = ', (rneedle^2*pi*2*w*(r)/C,12),' mm^2')
-print('pressure = ', (deltarho*grav*rneedle*p0,12),' Pa')
+print('volume = ', round(float(np.dot(rneedle**3*pi*w,(r**2*np.sin(psi))/C)),12),' mm^3')
+print('area = ', round(float(np.dot(rneedle**2*pi*2*w,(r)/C)),12),' mm^2')
+print('pressure = ', round(float(deltarho*grav*rneedle*p0),12),' Pa')
 
 # % plot the shape of the drop on the numerical grid
 # figure; hold on
@@ -214,13 +217,20 @@ print('pressure = ', (deltarho*grav*rneedle*p0,12),' Pa')
 # NOTE: the "right" way to interpolate is to fit a higher-orde polynomial 
 # though all the points (see book of Trefethen on Spectral Methods in 
 # Matlab, page  63). For plotting purposes we use a simpler interpolation 
-ss = linspace(s(1),s(end),Nplot)';
-rr = interp1(s,r,ss,'pchip');
-zz = interp1(s,z,ss,'pchip');
+
+#ss = np.linspace(s(1),s(-1),Nplot).T
+#rr = interp1d(s,r,ss,'pchip')
+#zz = interp1d(s,z,ss,'pchip')
+
+s_a=np.squeeze(s,axis=1)
+r_a=np.squeeze(r,axis=1)
+z_a=np.squeeze(z,axis=1)
 
 # plot the shape of the drop on the plotting grid
-figure; hold on
-scatter(rneedle*rr',rneedle*zz','b');
-plot(rneedle*rr',rneedle*zz','b');
-set(gca,'DataAspectRatio',[1 1 1])
+fig = plt.figure()
+plt.plot(r_a,z_a)
+plt.plot(-r_a,z_a)
+plt.axis('equal')
+axes=plt.gca()
+
 
