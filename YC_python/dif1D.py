@@ -17,9 +17,12 @@ def dif1D(type,s0,L,N,pts):
         s=s*scale; 
         d=(d/scale); 
         dd=dd/scale**2; 
-        s=(s-s[0]+s0).toarray()
-        d = np.full(d)
-        w=([np.diff(s.T),0]+[0,np.diff(s.T)])/2
+        s=(s-s[0]+s0)#.toarray()
+        #d = np.full(d)
+        w1=np.hstack((np.diff(s.T),np.zeros((1,1))))
+        w2=np.hstack((np.zeros((1,1)),np.diff(s.T)))
+        w=(w1+w2)/2
+        #w=([np.diff(s.T),0]+[0,np.diff(s.T)])/2
     elif type=='cheb': # chebychev
         scale=-L/2
         s,DM = chebdif(N,2)
@@ -49,7 +52,7 @@ def fddif(N,order,pts):#Done
     # subroutine for finite difference weights
     W=ufdwt(h,pts,order)
     t=(pts+1)/2
-
+    t=round(t)
     # central difference in the middle
     D=scipy.sparse.spdiags((np.ones((N,1))*W[(int(t-1))]).T,np.linspace(-t+1,t-1,2*t-1),N,N).toarray()
     for indd in range (0,t-1):
