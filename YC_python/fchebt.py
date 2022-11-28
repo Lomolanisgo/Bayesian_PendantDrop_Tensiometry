@@ -1,6 +1,6 @@
 import numpy as np
 import math as m
-from YC_fcbt import fcbt
+from fcbt import *
 from dif1D import *
 pi=m.pi
 def fchebt(y,max_order,shift_order):

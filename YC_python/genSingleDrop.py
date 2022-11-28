@@ -3,8 +3,6 @@ import math as m
 import numpy as np
 from dif1D import *
 import fit_circle_through_3_points
-import scipy.sparse
-from YC_fchebt import fchebt
 from scipy.interpolate import interp1d
 import matplotlib.pyplot as plt
 
