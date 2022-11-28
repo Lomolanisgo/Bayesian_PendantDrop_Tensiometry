@@ -237,8 +237,9 @@ def genSingleDrop(sigma,volume0,rneedle):
     r_a=np.squeeze(r,axis=1)
     z_a=np.squeeze(z,axis=1)
 
+
     # plot the shape of the drop on the plotting grid
-    path="./v%.2f_a%.2f_p%.2f.jpg" %(volume, area, pressure)
+    path="./v%.2f_s%.2f_p%.2f.jpg" %(volume0, sigma, pressure)
     fig = plt.figure(path)
     plt.plot(r_a,z_a)
     plt.plot(-r_a,z_a)
