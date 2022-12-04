@@ -1,8 +1,8 @@
 from datetime import datetime
 import math as m
 import numpy as np
-from dif1D import *
-import fit_circle_through_3_points
+from genDrops_python.dif1D import *
+from genDrops_python.fit_circle_through_3_points import *
 from scipy.interpolate import interp1d
 import matplotlib.pyplot as plt
 import os
@@ -34,8 +34,6 @@ def genSingleDrop(sigma,volume0,rneedle):
     vmax=pi*(2*rneedle)*sigma/(deltarho*grav)
 
     if volume0 <= vmax:
-
-      tic=datetime.now()
 
       # NOTE: the calculation is done in dimensionless form, using the 
       # dimensionless surface tension sigma' and volume V'
@@ -208,9 +206,6 @@ def genSingleDrop(sigma,volume0,rneedle):
       #coefr = fchebt(r,Ncheb,0); 
       #coefz = fchebt(z,Ncheb,0); 
 
-      toc=datetime.now()
-      print('Elapsed time: %f seconds' % (toc-tic).total_seconds())
-
       # compute volume and area (scaled back to dimensionfull)
 
       volume=round(float(np.dot(rneedle**3*pi*w,(r**2*np.sin(psi))/C)),12)
@@ -246,6 +241,7 @@ def genSingleDrop(sigma,volume0,rneedle):
         plt.fill_between(r_a,0,z_a,color='black')
         plt.fill_between(-r_a,0,z_a,color='black')
         plt.axis('equal')
+        plt.axis('off')
 
         #plt.show()
         plt.savefig(path)
