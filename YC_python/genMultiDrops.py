@@ -4,8 +4,10 @@ import numpy as np
 #volume0=32  # prescribed volume in mm^3
 rneedle=1 # [mm]
 
-for sigma in np.arange (20,21,0.1):
+for sigma in np.arange (10,100,5):
     sigma=sigma
-    for volume0 in np.arange (7,8,0.1):
+    for volume0 in np.arange (5,50,5):
         volume0=volume0
         genSingleDrop(sigma,volume0,rneedle)
+
+print('program finished')
