@@ -134,7 +134,7 @@ def genSingleDrop(savepath,sigma,rneedle=1,volume0=0,output=0):
         iter = iter + 1
 
         if iter > 1200 :
-          print('iter > 1200!')
+          #print('iter > 1200!')
           crash = 1; break
 
         # determine r from psi
