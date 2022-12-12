@@ -1,13 +1,18 @@
 from genSingleDrop import *
 import numpy as np
+import warnings
+import os.path
+warnings.filterwarnings('ignore')
+
+
 #sigma=100 # surface tension [mN/m]
 #volume0=32  # prescribed volume in mm^3
-rneedle=1 # [mm]
 
-for sigma in np.arange (50,51,1):
-    sigma=sigma
-    for volume0 in np.arange (5,100,1):
-        volume0=volume0
-        genSingleDrop(sigma,volume0,rneedle)
+path='../Images_Generated'
+path = os.path.abspath(path)
 
-print('program finished')
+for sigma in np.arange (73,74,1):
+    for volume0 in np.arange (20,21,1):
+        genSingleDrop(path,sigma,volume0)
+
+print('Program Finished')

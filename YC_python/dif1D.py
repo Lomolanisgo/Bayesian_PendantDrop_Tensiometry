@@ -5,9 +5,6 @@ from scipy.linalg import toeplitz
 from scipy.special import gamma
 import scipy.sparse
 
-def __init__():
-   return
-
 def dif1D(type,s0,L,N,pts):
     ''' [d/ds, d/ds^2, integral, s] = dif1D('type',s0,length,N_dof,order), creates
      the 1D differentiation matrices

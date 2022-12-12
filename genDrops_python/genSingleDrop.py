@@ -1,23 +1,42 @@
 from datetime import datetime
 import math as m
 import numpy as np
-from genDrops_python.dif1D import *
-from genDrops_python.fit_circle_through_3_points import *
+
+
 from scipy.interpolate import interp1d
 import matplotlib.pyplot as plt
 import os
+import warnings
+warnings.filterwarnings('ignore')
+from genDrops_python.dif1D import *
+#from dif1D import *
+from genDrops_python.fit_circle_through_3_points import *
+
+def __init__():
+   return
+
+
 def rms(y) :
         rms = np.sqrt(np.mean(y**2))
         return rms
 
-def genSingleDrop(sigma,volume0,rneedle):
+
+def vmax(rneedle,sigma,deltarho=1e-3,grav=9.807e3):
+    vmax=m.pi*(2*rneedle)*sigma/(deltarho*grav)
+    return vmax
+
+
+def genSingleDrop(savepath,sigma,rneedle=1,volume0=0,output=0):
     '''
     sigma: surface tension [mN/m]
-    volume0: prescribed volume in mm^3
-    rneedle: radius of the needle [mm]
+    volume0: prescribed volume in mm^3; if volume0=0, volume0=vmax
+    rneedle: radius of the needle [mm]; default 1
+    output: 0-->save images, 1-->output r and z
     '''
     # physical parameters
     
+
+
     #sigma = 100;       # surface tension [mN/m]
     #rneedle = 1; # radius of the needle [mm]
     #volume0 = 32;      # prescribed volume in mm^3
@@ -32,7 +51,10 @@ def genSingleDrop(sigma,volume0,rneedle):
     alpha = 0.1;     # relaxation parameter in the Newton-Raphson scheme
 
     vmax=pi*(2*rneedle)*sigma/(deltarho*grav)
-
+    
+    if volume0 == 0:
+       volume0 = vmax
+    
     if volume0 <= vmax:
 
       # NOTE: the calculation is done in dimensionless form, using the 
@@ -64,7 +86,7 @@ def genSingleDrop(sigma,volume0,rneedle):
 
           # find the roots for the polynomial of a spherical cap
           rts = np.roots([pi/6 ,0 ,pi/2 ,-volume0prime])    
-          h0 = m.real(rts[2])
+          h0 = np.real(rts[2])
 
           ABC=np.array(np.vstack(((1,0),(0,-h0),(-1,0))))
           Rguess,xcyc = fit_circle_through_3_points(ABC)
@@ -84,12 +106,12 @@ def genSingleDrop(sigma,volume0,rneedle):
           D,_,w,s = dif1D('fd',0,smax,N,5)
 
           # start- and end-point of the current radial line
-          dtheta = m.linspace(-m.pi/2,theta,N)
+          dtheta = np.linspace(-m.pi/2,theta,N)
           dtheta = dtheta.T
-          r = xcyc[0] + Rguess*m.cos(dtheta)
-          z = xcyc[1] + Rguess*m.sin(dtheta)
+          r = xcyc[0] + Rguess*np.cos(dtheta).reshape((40,1))
+          z = xcyc[1] + Rguess*np.sin(dtheta).reshape((40,1))
 
-          psi = np.arctan2(np.dot(D,z),np.dot(D,r))
+          psi = np.arctan2(np.dot(D,z),np.dot(D,r)).reshape((40,1))
 
           C = 1;                      # initial stretch parameter
           p0 = 2*Rguess*sigmaprime;   # predict the pressure
@@ -211,9 +233,9 @@ def genSingleDrop(sigma,volume0,rneedle):
       volume=round(float(np.dot(rneedle**3*pi*w,(r**2*np.sin(psi))/C)),12)
       area=round(float(np.dot(rneedle**2*pi*2*w,(r)/C)),12)
       pressure=round(float(deltarho*grav*rneedle*p0),12)
-      print('volume = ', volume,' mm^3')
-      print('area = ',area ,' mm^2')
-      print('pressure = ',pressure ,' Pa')
+      #print('volume = ', volume,' mm^3')
+      #print('area = ',area ,' mm^2')
+      #print('pressure = ',pressure ,' Pa')
 
       # % plot the shape of the drop on the numerical grid
       # figure; hold on
@@ -228,13 +250,14 @@ def genSingleDrop(sigma,volume0,rneedle):
       #ss = np.linspace(s(1),s(-1),Nplot).T
       #rr = interp1d(s,r,ss,'pchip')
       #zz = interp1d(s,z,ss,'pchip')
-
+      s_a=np.squeeze(s,axis=1)
+      r_a=np.squeeze(r,axis=1)
+      z_a=np.squeeze(z,axis=1)
+      
+    if output==0:
       if volume==volume0:
-        s_a=np.squeeze(s,axis=1)
-        r_a=np.squeeze(r,axis=1)
-        z_a=np.squeeze(z,axis=1)
         # plot the shape of the drop on the plotting grid
-        path="./GenImages/s%.2f_v%.2f_p%.2f.jpg" %(sigma, volume0, pressure)
+        path=savepath+"/s%.2f_v%.2f_rn%.2f.jpg" %(sigma, volume0, rneedle)
         plt.figure(figsize=(4,4))
         plt.plot(r_a,z_a,color='black')
         plt.plot(-r_a,z_a,color='black')
@@ -242,9 +265,26 @@ def genSingleDrop(sigma,volume0,rneedle):
         plt.fill_between(-r_a,0,z_a,color='black')
         plt.axis('equal')
         plt.axis('off')
-
         #plt.show()
         plt.savefig(path)
+      return
+    elif output==1:
+      return r_a,z_a
+    else:
+      return 
 
-    return 
+def plt_image_needle(r_a,z_a,path,l_needle=4,sigma=0,volume0=0,rneedle=1):
+    
+    path=path+"/s%.2f_v%.2f_rn%.2f_ln%.2f_needle.jpg" %(sigma, volume0, rneedle,l_needle)
+    plt.figure(figsize=(4,4))
+    plt.plot(r_a,z_a,color='black')
+    plt.plot(-r_a,z_a,color='black')
+    
+    plt.fill_between(r_a,l_needle,0,color='black')
+    plt.fill_between(-r_a,l_needle,0,color='black')
+    plt.fill_between(r_a,0,z_a,color='black')
+    plt.fill_between(-r_a,0,z_a,color='black')
 
+    plt.axis('equal')
+    plt.axis('off')
+    plt.savefig(path)

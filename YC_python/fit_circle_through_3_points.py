@@ -1,9 +1,6 @@
 import numpy as np
 import math as m
 
-def __init__():
-    return
-
 def fit_circle_through_3_points(ABC):# need rewrite
     ''' Mathematical background is provided in http://www.regentsprep.org/regents/math/geometry/gcg6/RCir.html
     Imput: 
