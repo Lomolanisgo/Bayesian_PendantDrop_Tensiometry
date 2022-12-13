@@ -8,9 +8,9 @@ import matplotlib.pyplot as plt
 import os
 import warnings
 warnings.filterwarnings('ignore')
-from genDrops_python.dif1D import *
+from codes_gendrops_py.dif1D import *
 #from dif1D import *
-from genDrops_python.fit_circle_through_3_points import *
+from codes_gendrops_py.fit_circle_through_3_points import *
 
 def __init__():
    return
@@ -288,3 +288,4 @@ def plt_image_needle(r_a,z_a,path,l_needle=4,sigma=0,volume0=0,rneedle=1):
     plt.axis('equal')
     plt.axis('off')
     plt.savefig(path)
+    return 
