@@ -12,9 +12,8 @@ def ResizeImage(filein,width,height):
     return fileout
 
 
-def img2bw(img,size):
-    img_rs=ResizeImage(img,size,size) #resize 
-    img_gray=img_rs.convert('L') # rgb 2 gray
+def img2bw(img):
+    img_gray=img.convert('L') # rgb 2 gray
     array_img=np.array(img_gray) # img 2 array
     _,img_BW=cv2.threshold(array_img,0,255,cv2.THRESH_OTSU) # gray 2 bw
     return img_BW
