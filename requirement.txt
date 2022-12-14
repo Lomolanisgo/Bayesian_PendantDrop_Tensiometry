@@ -3,3 +3,4 @@ numpy
 math
 scikit-image
 matplotlib
+opencv-python
