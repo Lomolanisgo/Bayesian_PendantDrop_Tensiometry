@@ -3,3 +3,4 @@ __pycache__/
 images_gen/
 Venv/
 .ipynb_checkpoints/
+*.pyc
