@@ -253,21 +253,21 @@ def genSingleDrop(savepath,sigma,rneedle=1,volume0=0,output=0):
       s_a=np.squeeze(s,axis=1)
       r_a=np.squeeze(r,axis=1)
       z_a=np.squeeze(z,axis=1)
-      
+      #path=savepath+"/s%.2f_v%.2f_rn%.2f.jpg" %(sigma, volume0, rneedle)  
     if output==0:
-      if volume==volume0:
+      #if volume==volume0:
         # plot the shape of the drop on the plotting grid
-        path=savepath+"/s%.2f_v%.2f_rn%.2f.jpg" %(sigma, volume0, rneedle)
-        plt.figure(figsize=(4,4))
-        plt.plot(r_a,z_a,color='black')
-        plt.plot(-r_a,z_a,color='black')
-        plt.fill_between(r_a,0,z_a,color='black')
-        plt.fill_between(-r_a,0,z_a,color='black')
-        plt.axis('equal')
-        plt.axis('off')
-        #plt.show()
-        plt.savefig(path)
-      return
+      path=savepath+"/s%.2f_v%.2f_rn%.2f.jpg" %(sigma, volume0, rneedle)
+      plt.figure(figsize=(4,4))
+      plt.plot(r_a,z_a,color='black')
+      plt.plot(-r_a,z_a,color='black')
+      plt.fill_between(r_a,0,z_a,color='black')
+      plt.fill_between(-r_a,0,z_a,color='black')
+      plt.axis('equal')
+      plt.axis('off')
+      #plt.show()
+      plt.savefig(path)
+      return path
     elif output==1:
       return r_a,z_a
     else:
