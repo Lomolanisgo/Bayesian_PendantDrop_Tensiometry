@@ -46,8 +46,8 @@ def genSingleDrop(savepath,sigma,rneedle=1,volume0=0,output=0):
 
     # numerical parameters
     N = 40;          # resolution of the discretization for calculation
-    Nplot = 80;      # resolution of the discretization for plotting
-    Ncheb = 10;      # number of Chebyshev to describe the shape
+    #Nplot = 80;      # resolution of the discretization for plotting
+    #Ncheb = 10;      # number of Chebyshev to describe the shape
     alpha = 0.1;     # relaxation parameter in the Newton-Raphson scheme
 
     vmax=pi*(2*rneedle)*sigma/(deltarho*grav)
@@ -230,9 +230,9 @@ def genSingleDrop(savepath,sigma,rneedle=1,volume0=0,output=0):
 
       # compute volume and area (scaled back to dimensionfull)
 
-      volume=round(float(np.dot(rneedle**3*pi*w,(r**2*np.sin(psi))/C)),12)
-      area=round(float(np.dot(rneedle**2*pi*2*w,(r)/C)),12)
-      pressure=round(float(deltarho*grav*rneedle*p0),12)
+      #volume=round(float(np.dot(rneedle**3*pi*w,(r**2*np.sin(psi))/C)),12)
+      #area=round(float(np.dot(rneedle**2*pi*2*w,(r)/C)),12)
+      #pressure=round(float(deltarho*grav*rneedle*p0),12)
       #print('volume = ', volume,' mm^3')
       #print('area = ',area ,' mm^2')
       #print('pressure = ',pressure ,' Pa')
@@ -250,7 +250,8 @@ def genSingleDrop(savepath,sigma,rneedle=1,volume0=0,output=0):
       #ss = np.linspace(s(1),s(-1),Nplot).T
       #rr = interp1d(s,r,ss,'pchip')
       #zz = interp1d(s,z,ss,'pchip')
-      s_a=np.squeeze(s,axis=1)
+
+      #s_a=np.squeeze(s,axis=1)
       r_a=np.squeeze(r,axis=1)
       z_a=np.squeeze(z,axis=1)
       #path=savepath+"/s%.2f_v%.2f_rn%.2f.jpg" %(sigma, volume0, rneedle)  
@@ -265,8 +266,7 @@ def genSingleDrop(savepath,sigma,rneedle=1,volume0=0,output=0):
       plt.fill_between(-r_a,0,z_a,color='black')
       plt.axis('equal')
       plt.axis('off')
-      #plt.show()
-      plt.savefig(path)
+      plt.savefig(path,bbox_inches='tight',pad_inches=0.0)
       return path
     elif output==1:
       return r_a,z_a
