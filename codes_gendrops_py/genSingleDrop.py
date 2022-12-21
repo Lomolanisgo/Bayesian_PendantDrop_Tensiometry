@@ -255,6 +255,10 @@ def genSingleDrop(savepath,sigma,rneedle=1,volume0=0,output=0):
       r_a=np.squeeze(r,axis=1)
       z_a=np.squeeze(z,axis=1)
       #path=savepath+"/s%.2f_v%.2f_rn%.2f.jpg" %(sigma, volume0, rneedle)  
+    else:
+      r_a=np.zeros(N)
+      z_a=np.zeros(N)
+    
     if output==0:
       #if volume==volume0:
         # plot the shape of the drop on the plotting grid
@@ -271,7 +275,7 @@ def genSingleDrop(savepath,sigma,rneedle=1,volume0=0,output=0):
     elif output==1:
       return r_a,z_a
     else:
-      return 
+      return r_a*0,z_a*0
 
 def plt_image_needle(r_a,z_a,path,l_needle=4,sigma=0,volume0=0,rneedle=1):
     
