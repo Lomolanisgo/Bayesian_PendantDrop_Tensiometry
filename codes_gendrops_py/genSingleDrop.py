@@ -267,10 +267,9 @@ def genSingleDrop(sigma,rneedle=1,volume0=0,output=0,savepath='./images_notuploa
       plt.savefig(path,bbox_inches='tight',pad_inches=0.0)
       plt.close()
       return path
-    elif output==1:
-      return r_a,z_a
     else:
-      return 
+      return r_a,z_a
+
 
 def plt_image_needle(r_a,z_a,path,l_needle=4,sigma=0,volume0=0,rneedle=1):
     
