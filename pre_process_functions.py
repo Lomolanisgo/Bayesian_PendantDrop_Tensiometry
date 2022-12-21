@@ -64,7 +64,7 @@ def cost(img_ori,img_gen,size=100,output=0):
     else:
         return accurancy,C
 
-def crop_margin(img,path='./cut_edge.png'):
+def crop_margin(img,path='./images_notupload/cut_edge.png'):
         img2=img.sum(axis=2)
         (row,col)=img2.shape
         row_top=0
