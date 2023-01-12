@@ -5,6 +5,7 @@ Venv/
 .ipynb_checkpoints/
 *.pyc
 Used_Codes/
-images_notupload/
+images_notupload/*.png
+images_notupload/*.jpg
 test.ipynb
 .DS_Store
