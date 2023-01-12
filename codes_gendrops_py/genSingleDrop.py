@@ -1,7 +1,7 @@
 from datetime import datetime
 import math as m
 import numpy as np
-
+import time
 
 from scipy.interpolate import interp1d
 import matplotlib.pyplot as plt
@@ -11,6 +11,9 @@ warnings.filterwarnings('ignore')
 from codes_gendrops_py.dif1D import *
 #from dif1D import *
 from codes_gendrops_py.fit_circle_through_3_points import *
+
+from numba import jit
+@jit
 
 def __init__():
    return
@@ -36,24 +39,23 @@ def genSingleDrop(sigma,rneedle=1,volume0=0,output=0,savepath='./images_notuploa
     # physical parameters
     
 
-
-    #sigma = 100;       # surface tension [mN/m]
-    #rneedle = 1; # radius of the needle [mm]
-    #volume0 = 32;      # prescribed volume in mm^3
-    grav = 9.807e3;    # gravitational acceleration [mm/s^2]
-    deltarho = 1e-3;   # density difference [10^6 kg/m^3]
+    start = time.time()
+    #sigma = 100;           # surface tension [mN/m]
+    #rneedle = 1;           # radius of the needle [mm]
+    #volume0 = 32;          # prescribed volume in mm^3
+    grav = 9.807e3;         # gravitational acceleration [mm/s^2]
+    deltarho = 1e-3;        # density difference [10^6 kg/m^3]
     pi=m.pi
 
     # numerical parameters
-    N = 40;          # resolution of the discretization for calculation
-    #Nplot = 80;      # resolution of the discretization for plotting
-    #Ncheb = 10;      # number of Chebyshev to describe the shape
-    alpha = 0.1;     # relaxation parameter in the Newton-Raphson scheme
+    N = 40;                 # resolution of the discretization for calculation
+    #Nplot = 80;            # resolution of the discretization for plotting
+    #Ncheb = 10;            # number of Chebyshev to describe the shape
+    alpha = 0.1;            # relaxation parameter in the Newton-Raphson scheme
 
-    vmax=pi*(2*rneedle)*sigma/(deltarho*grav)
     
-    if volume0 == 0:
-       volume0 = vmax
+    #if volume0 == 0:
+    #   volume0 = vmax
     
     # NOTE: the calculation is done in dimensionless form, using the 
     # dimensionless surface tension sigma' and volume V'
@@ -120,11 +122,11 @@ def genSingleDrop(sigma,rneedle=1,volume0=0,output=0,savepath='./images_notuploa
 
 
     # initialize some variables 
-    Z = np.zeros((N,N));            # matrix filled with zeros
-    IDL = np.hstack((1, np.zeros((N-1)))); # line with single one and rest zeros
-    ZL = np.zeros(N);       # line completely filled with zeros
+    Z = np.zeros((N,N));                    # matrix filled with zeros
+    IDL = np.hstack((1, np.zeros((N-1))));  # line with single one and rest zeros
+    ZL = np.zeros(N);                       # line completely filled with zeros
     u = np.ones((3*N+2,1)); 
-    b = np.ones((3*N+2,1)); # solution vector and right hand side
+    b = np.ones((3*N+2,1));                 # solution vector and right hand side
     iter = 0; crash = 0; 
 
     while rms(u) > 1e-10:
@@ -192,13 +194,6 @@ def genSingleDrop(sigma,rneedle=1,volume0=0,output=0,savepath='./images_notuploa
       # assemble matrices
       Z1 = np.zeros(N).reshape(N,1)
 
-      # use for debug
-      #A_0=np.hstack((A11, Z, A13, A18, Z1))
-      #A_1=np.hstack((Z, A22, A23, A28, Z1))
-      #A_2=np.hstack((A31, A32, A33, A38, A39))
-      #A_3=np.hstack((A81, np.zeros((1,2*N)), np.array(-1).reshape(1,1), np.array(0).reshape(1,1)))
-      #A_4=np.hstack((A91, Z1.T,A93,A98,np.array(0).reshape(1,1)))
-
       A = np.vstack((np.hstack((A11, Z, A13, A18, Z1)),
                     np.hstack((Z, A22, A23, A28, Z1)),
                     np.hstack((A31, A32, A33, A38, A39)),
@@ -222,7 +217,7 @@ def genSingleDrop(sigma,rneedle=1,volume0=0,output=0,savepath='./images_notuploa
 
     # calculate the Chebyshev coefficients
     # Dont need this part to plot the drop!!!!!!!
-    # 'I am stupid!' ------Charles Leclerc
+    # 'I am stupid!'
     #coefr = fchebt(r,Ncheb,0); 
     #coefz = fchebt(z,Ncheb,0); 
 
@@ -252,9 +247,8 @@ def genSingleDrop(sigma,rneedle=1,volume0=0,output=0,savepath='./images_notuploa
     #s_a=np.squeeze(s,axis=1)
     r_a=np.squeeze(r,axis=1)
     z_a=np.squeeze(z,axis=1)
-    #path=savepath+"/s%.2f_v%.2f_rn%.2f.jpg" %(sigma, volume0, rneedle)  
-    
-    
+    end = time.time()
+    print('Gen Image Program execution time: ',end - start)
     if output==0:
       #if volume==volume0:
         # plot the shape of the drop on the plotting grid
@@ -286,4 +280,4 @@ def plt_image_needle(r_a,z_a,path,l_needle=4,sigma=0,volume0=0,rneedle=1):
     plt.axis('equal')
     plt.axis('off')
     plt.savefig(path)
-    return 
+    return 5
