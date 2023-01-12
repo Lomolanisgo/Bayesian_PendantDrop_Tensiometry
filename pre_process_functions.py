@@ -12,6 +12,9 @@ def ResizeImage(filein,width,height):
     fileout=filein.resize((width,height),Image.Resampling.LANCZOS)
     return fileout
 
+def ResizeArray(arrayin,width,height):
+    arrayout=arrayin.resize((width,height))
+    return arrayout
 
 def img2bw(img):
     img_gray=img.convert('L') # rgb 2 gray
