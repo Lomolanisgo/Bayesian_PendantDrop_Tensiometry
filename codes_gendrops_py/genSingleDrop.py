@@ -12,6 +12,7 @@ from codes_gendrops_py.dif1D import *
 #from dif1D import *
 from codes_gendrops_py.fit_circle_through_3_points import *
 
+from numba import jit
 
 def __init__():
    return
@@ -25,7 +26,6 @@ def rms(y) :
 def vmax(rneedle,sigma,deltarho=1e-3,grav=9.807e3):
     vmax=m.pi*(2*rneedle)*sigma/(deltarho*grav)
     return vmax
-
 
 def genSingleDrop(sigma,rneedle=1,volume0=0,output=0,savepath='./images_notupload'):
     '''
@@ -127,14 +127,15 @@ def genSingleDrop(sigma,rneedle=1,volume0=0,output=0,savepath='./images_notuploa
     b = np.ones((3*N+2,1));                 # solution vector and right hand side
     iter = 0; crash = 0; 
 
-    while rms(u) > 1e-10:
+    #while rms(u) > 1e-10:
+    for i in range (1200):
+      #iter = iter + 1
     
-      iter = iter + 1
-
-      if iter > 1200 :
+      #if iter > 1200 :
         #print('iter > 1200!')
-        crash = 1; break
-
+      #   break
+      if rms(u) > 1e-10:
+        break
       # determine r from psi
       A11 = C*D; 
       A13 = np.diag(np.squeeze(np.sin(psi)))
@@ -211,8 +212,9 @@ def genSingleDrop(sigma,rneedle=1,volume0=0,output=0,savepath='./images_notuploa
       p0  = p0  + alpha*u[3*N]; 
 
       if rms(b) > 1e3:
-        crash = 1; break; 
+         break; 
 
+      
     # calculate the Chebyshev coefficients
     # Dont need this part to plot the drop!!!!!!!
     # 'I am stupid!'
@@ -278,4 +280,4 @@ def plt_image_needle(r_a,z_a,path,l_needle=4,sigma=0,volume0=0,rneedle=1):
     plt.axis('equal')
     plt.axis('off')
     plt.savefig(path)
-    return 5
+    return
