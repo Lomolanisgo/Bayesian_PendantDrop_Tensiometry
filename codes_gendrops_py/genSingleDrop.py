@@ -12,8 +12,6 @@ from codes_gendrops_py.dif1D import *
 #from dif1D import *
 from codes_gendrops_py.fit_circle_through_3_points import *
 
-from numba import jit
-@jit
 
 def __init__():
    return
