@@ -100,7 +100,7 @@ def crop_margin(img,path='./images_notupload/cut_edge.png'):
 
         return new_img,path
 
-def crop_margin_array(img,path='./images_notupload/cut_edge.png'):#(Not finish)
+def crop_margin_array(img):#(Not finish)
         img2=img.sum(axis=2)
         (row,col)=img2.shape
         row_top=0
@@ -129,6 +129,4 @@ def crop_margin_array(img,path='./images_notupload/cut_edge.png'):#(Not finish)
  
         new_img=img[row_top:raw_down+1,col_top:col_down+1,0:3]
 
-        io.imsave(path,new_img)
-
-        return new_img,path
+        return new_img
