@@ -1,18 +1,17 @@
 from datetime import datetime
 import math as m
-import numpy as np
+import numpy as np 
 import time
-
 from scipy.interpolate import interp1d
 import matplotlib.pyplot as plt
 import os
 import warnings
 warnings.filterwarnings('ignore')
 from codes_gendrops_py.dif1D import *
-#from dif1D import *
 from codes_gendrops_py.fit_circle_through_3_points import *
 
 from numba import jit
+
 
 def __init__():
    return
@@ -27,7 +26,7 @@ def vmax(rneedle,sigma,deltarho=1e-3,grav=9.807e3):
     vmax=m.pi*(2*rneedle)*sigma/(deltarho*grav)
     return vmax
 
-def genSingleDrop(sigma,rneedle=1,volume0=0,output=0,savepath='./images_notupload'):
+def genSingleDrop(sigma,rneedle=1,volume0=0,output=0,savepath='./images_notupload',loop_times=1200):
     '''
     sigma: surface tension [mN/m]
     volume0: prescribed volume in mm^3; if volume0=0, volume0=vmax
@@ -125,18 +124,20 @@ def genSingleDrop(sigma,rneedle=1,volume0=0,output=0,savepath='./images_notuploa
     ZL = np.zeros(N);                       # line completely filled with zeros
     u = np.ones((3*N+2,1)); 
     b = np.ones((3*N+2,1));                 # solution vector and right hand side
-    iter = 0; crash = 0; 
+    #iter = 0; crash = 0; 
 
     #while rms(u) > 1e-10:
-    for i in range (1200):
+    for i in range (loop_times):
       #iter = iter + 1
-    
       #if iter > 1200 :
         #print('iter > 1200!')
       #   break
-      if rms(u) > 1e-10:
+      
+      if rms(u) < 1e-10:
         break
       # determine r from psi
+      #start_l=time.time()
+
       A11 = C*D; 
       A13 = np.diag(np.squeeze(np.sin(psi)))
       A18 = np.dot(D,r); 
@@ -170,7 +171,6 @@ def genSingleDrop(sigma,rneedle=1,volume0=0,output=0,savepath='./images_notuploa
 
       # boundary condition r(0) = 0
       A11[0,:] = IDL; 
-
       A13[0,:] = ZL; 
       A18[0] = 0
       b1[0] = -r[0]
@@ -207,14 +207,15 @@ def genSingleDrop(sigma,rneedle=1,volume0=0,output=0,savepath='./images_notuploa
       # update variables
       r   = r   + alpha*u[0:N]
       z   = z   + alpha*u[N:2*N]; 
-      psi = psi + alpha*u[2*N:3*N]; 
-      C   = C   + alpha*u[3*N]; 
-      p0  = p0  + alpha*u[3*N]; 
+      #psi = psi + alpha*u[2*N:3*N]; 
+      #C   = C   + alpha*u[3*N]; 
+      #p0  = p0  + alpha*u[3*N]; 
 
       if rms(b) > 1e3:
          break; 
 
-      
+      #end_l=time.time()
+      #time_l=end_l-start_l
     # calculate the Chebyshev coefficients
     # Dont need this part to plot the drop!!!!!!!
     # 'I am stupid!'
@@ -249,6 +250,7 @@ def genSingleDrop(sigma,rneedle=1,volume0=0,output=0,savepath='./images_notuploa
     z_a=np.squeeze(z,axis=1)
     end = time.time()
     print('Gen Image Program execution time: ',end - start)
+    #print('single loop time is : ',time_l)
     if output==0:
       #if volume==volume0:
         # plot the shape of the drop on the plotting grid
