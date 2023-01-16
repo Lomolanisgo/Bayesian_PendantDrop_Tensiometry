@@ -10,6 +10,9 @@ from pre_process_functions import *
 from PIL import Image
 import numpy as np
 
+def __init__():
+    return
+
 def gen_doplet_v5(sigma,volume0,rneedle=0.5):
     # when output=1 gSD return r_a,z_a
     r_a,z_a=genSingleDrop(sigma=sigma,volume0=volume0,rneedle=rneedle,output=1)
@@ -220,9 +223,9 @@ def obtimize_v5(sv,path_ori=os.path.abspath('./images_experiment/220304_miliq_T1
 
     if output==0:
         lost=cost_v3(ori,syn,output=output)
-        xs.append(sv)
-        losts.append(lost)
-        print(sv,lost)
+        #xs.append(sv)
+        #losts.append(lost)
+        #print(sv,lost)
         return lost
     elif output==1:
         C=cost_v3(ori,syn,output=output)
@@ -231,13 +234,13 @@ def obtimize_v5(sv,path_ori=os.path.abspath('./images_experiment/220304_miliq_T1
         C,lost=cost_v3(ori,syn,output=output)
         return C, lost
 
-import scipy.optimize
-# use scipy obtimaize the parameter
-opStart=time.time()
-xs=[]
-losts=[]
-x0=np.asarray((75,11))
-#sigma; v0; length_Ne,r_Ne; x,y; scaling_rate;
-res=scipy.optimize.minimize(obtimize_v5,x0,method='nelder-mead',options={'maxiter':50})
-opEnd=time.time()
-print('Optimize Program Running Time: ',opEnd-opStart)
+#import scipy.optimize
+## use scipy obtimaize the parameter
+#opStart=time.time()
+#xs=[]
+#losts=[]
+#x0=np.asarray((75,11))
+##sigma; v0; length_Ne,r_Ne; x,y; scaling_rate;
+#res=scipy.optimize.minimize(obtimize_v5,x0,method='nelder-mead',options={'maxiter':50})
+#opEnd=time.time()
+#print('Optimize Program Running Time: ',opEnd-opStart)
