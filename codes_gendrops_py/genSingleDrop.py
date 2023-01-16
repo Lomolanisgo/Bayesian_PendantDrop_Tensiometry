@@ -249,7 +249,7 @@ def genSingleDrop(sigma,rneedle=1,volume0=0,output=0,savepath='./images_notuploa
     r_a=np.squeeze(r,axis=1)
     z_a=np.squeeze(z,axis=1)
     end = time.time()
-    print('Gen Image Program execution time: ',end - start)
+    #print('Gen Image Program execution time: ',end - start)
     #print('single loop time is : ',time_l)
     if output==0:
       #if volume==volume0:
