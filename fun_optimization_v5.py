@@ -6,7 +6,7 @@ from codes_gendrops_py.fit_circle_through_3_points import *
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 from matplotlib.backends.backend_agg import FigureCanvasAgg
-from pre_process_functions import *
+from fun_pre_process import *
 from PIL import Image
 import numpy as np
 
