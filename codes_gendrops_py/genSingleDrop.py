@@ -26,7 +26,7 @@ def vmax(rneedle,sigma,deltarho=1e-3,grav=9.807e3):
     vmax=m.pi*(2*rneedle)*sigma/(deltarho*grav)
     return vmax
 
-def genSingleDrop(sigma,rneedle=1,volume0=0,output=0,savepath='./images_notupload',loop_times=1200):
+def genSingleDrop(sigma,rneedle=1,volume0=0,output=0,savepath='.',loop_times=1200):
     '''
     sigma: surface tension [mN/m]
     volume0: prescribed volume in mm^3; if volume0=0, volume0=vmax
