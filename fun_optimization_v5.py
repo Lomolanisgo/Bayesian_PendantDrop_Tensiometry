@@ -1,7 +1,7 @@
 import os
 import math as m
 import time
-from codes_gendrops_py.genSingleDrop import *
+from fun_genSingleDrop import *
 from codes_gendrops_py.fit_circle_through_3_points import *
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
@@ -236,7 +236,6 @@ def cost_v3(img_ori,img_syn,width=100,output=0):
 
 def obtimize_v5(sv,path_ori=os.path.abspath('./images_experiment/220304_miliq_T17.7_S73.04.png'),output=0,append=1):
     '''need initialize xs and losts if output==0'''
-    start = time.time()
     sigma=sv[0]
     v0=sv[1]
 
@@ -251,7 +250,6 @@ def obtimize_v5(sv,path_ori=os.path.abspath('./images_experiment/220304_miliq_T1
     syn_arr_cm=crop_margin_array_v5(syn_arr)
     syn=resize_syn_arr(syn_arr_cm,wmax,r_syn=1)
 
-    end = time.time()
     #print('Obtimize Program execution time: ',end - start)
 
     if output==0:
