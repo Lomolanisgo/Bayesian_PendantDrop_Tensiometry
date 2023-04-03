@@ -1,17 +1,14 @@
-from datetime import datetime
 import math as m
 import numpy as np 
-import time
 from scipy.interpolate import interp1d
 import matplotlib.pyplot as plt
 import os
 import warnings
-warnings.filterwarnings('ignore')
 from codes_gendrops_py.dif1D import *
 from codes_gendrops_py.fit_circle_through_3_points import *
 
-from numba import jit
 
+warnings.filterwarnings('ignore')
 
 def __init__():
    return
@@ -21,12 +18,11 @@ def rms(y) :
         rms = np.sqrt(np.mean(y**2))
         return rms
 
+#def vmax(rneedle,sigma,deltarho=1e-3,grav=9.807e3):
+#    vmax=m.pi*(2*rneedle)*sigma/(deltarho*grav)
+#    return vmax
 
-def vmax(rneedle,sigma,deltarho=1e-3,grav=9.807e3):
-    vmax=m.pi*(2*rneedle)*sigma/(deltarho*grav)
-    return vmax
-
-def genSingleDrop(sigma,rneedle=1,volume0=0,output=0,savepath='.',loop_times=1200):
+def genSingleDrop(sigma,volume0,rneedle,output=0,savepath='.'):
     '''
     sigma: surface tension [mN/m]
     volume0: prescribed volume in mm^3; if volume0=0, volume0=vmax
@@ -35,8 +31,6 @@ def genSingleDrop(sigma,rneedle=1,volume0=0,output=0,savepath='.',loop_times=120
     '''
     # physical parameters
     
-
-    start = time.time()
     #sigma = 100;           # surface tension [mN/m]
     #rneedle = 1;           # radius of the needle [mm]
     #volume0 = 32;          # prescribed volume in mm^3
@@ -62,7 +56,7 @@ def genSingleDrop(sigma,rneedle=1,volume0=0,output=0,savepath='.',loop_times=120
     volume0prime = volume0/rneedle**3
 
     # find the initial guess of the droplet shape
-    if  deltarho*grav*volume0/(2*m.pi*sigma*rneedle) > 0.14:
+    if  deltarho*grav*volume0/(2*pi*sigma*rneedle) > 0.14:
 
         # predict the maximum length of the interface (empirical Nagel)
         smax = m.sqrt(sigmaprime)*2.0/0.8701
@@ -95,7 +89,6 @@ def genSingleDrop(sigma,rneedle=1,volume0=0,output=0,savepath='.',loop_times=120
         else:
           theta = -m.acos(1/Rguess)
 
-
         # predict the maximum length of the interface
         smax = Rguess*(2*theta+m.pi)
 
@@ -124,20 +117,21 @@ def genSingleDrop(sigma,rneedle=1,volume0=0,output=0,savepath='.',loop_times=120
     ZL = np.zeros(N);                       # line completely filled with zeros
     u = np.ones((3*N+2,1)); 
     b = np.ones((3*N+2,1));                 # solution vector and right hand side
-    #iter = 0; crash = 0; 
+    iter = 0; crash = 0; 
 
-    #while rms(u) > 1e-10:
-    for i in range (loop_times):
-      #iter = iter + 1
-      #if iter > 1200 :
-        #print('iter > 1200!')
-      #   break
-      
-      if rms(u) < 1e-10:
+    while rms(u) > 1e-10:
+
+      iter = iter + 1
+
+      if iter > 1200 :
+        print('iter > 1200!')
         break
+      
+      #if rms(u) < 1e-10:
+      #  break
       # determine r from psi
       #start_l=time.time()
-
+      
       A11 = C*D; 
       A13 = np.diag(np.squeeze(np.sin(psi)))
       A18 = np.dot(D,r); 
@@ -207,15 +201,13 @@ def genSingleDrop(sigma,rneedle=1,volume0=0,output=0,savepath='.',loop_times=120
       # update variables
       r   = r   + alpha*u[0:N]
       z   = z   + alpha*u[N:2*N]; 
-      #psi = psi + alpha*u[2*N:3*N]; 
-      #C   = C   + alpha*u[3*N]; 
-      #p0  = p0  + alpha*u[3*N]; 
+      psi = psi + alpha*u[2*N:3*N]; 
+      C   = C   + alpha*u[3*N]; 
+      p0  = p0  + alpha*u[3*N+1]; 
 
       if rms(b) > 1e3:
          break; 
 
-      #end_l=time.time()
-      #time_l=end_l-start_l
     # calculate the Chebyshev coefficients
     # Dont need this part to plot the drop!!!!!!!
     # 'I am stupid!'
@@ -227,6 +219,7 @@ def genSingleDrop(sigma,rneedle=1,volume0=0,output=0,savepath='.',loop_times=120
     #volume=round(float(np.dot(rneedle**3*pi*w,(r**2*np.sin(psi))/C)),12)
     #area=round(float(np.dot(rneedle**2*pi*2*w,(r)/C)),12)
     #pressure=round(float(deltarho*grav*rneedle*p0),12)
+
     #print('volume = ', volume,' mm^3')
     #print('area = ',area ,' mm^2')
     #print('pressure = ',pressure ,' Pa')
@@ -248,16 +241,13 @@ def genSingleDrop(sigma,rneedle=1,volume0=0,output=0,savepath='.',loop_times=120
     #s_a=np.squeeze(s,axis=1)
     r_a=np.squeeze(r,axis=1)
     z_a=np.squeeze(z,axis=1)
-    end = time.time()
     #print('Gen Image Program execution time: ',end - start)
     #print('single loop time is : ',time_l)
     if output==0:
-      #if volume==volume0:
-        # plot the shape of the drop on the plotting grid
       path=savepath+"/s%.2f_v%.2f_rn%.2f.jpg" %(sigma, volume0, rneedle)
       plt.figure(figsize=(4,4))
-      plt.fill_between(r_a,0,z_a,color='black')
-      plt.fill_between(-r_a,0,z_a,color='black')
+      plt.fill_between(r_a*rneedle,0,z_a*rneedle,color='black')
+      plt.fill_between(-r_a*rneedle,0,z_a*rneedle,color='black')
       plt.axis('equal')
       plt.axis('off')
       plt.savefig(path,bbox_inches='tight',pad_inches=0.0)

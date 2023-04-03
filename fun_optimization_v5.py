@@ -13,11 +13,11 @@ import numpy as np
 def __init__():
     return
 
-def gen_doplet_v5(sigma,volume0,rneedle=0.5):
+def gen_droplet_v5(sigma,volume0,rneedle=0.5):
     # when output=1 gSD return r_a,z_a
     r_a,z_a=genSingleDrop(sigma=sigma,volume0=volume0,rneedle=rneedle,output=1)
     wmax=2*max(abs(r_a))
-
+    r_a0=r_a[0]
     # use plt generate synthetic image and save as arrayd
     plt.fill_between(r_a,z_a,color='black')
     plt.fill_between(-r_a,z_a,color='black')
@@ -32,7 +32,7 @@ def gen_doplet_v5(sigma,volume0,rneedle=0.5):
     syn_array = np.rint(A[...,:3] @ [0.2126, 0.7152, 0.0722]).astype(np.uint8)
     
 
-    return syn_array,wmax,rneedle
+    return syn_array,wmax,rneedle,r_a0
 
 def crop_margin_array_v5(syn_array):#(DONE)
         
@@ -201,39 +201,6 @@ def cost_v3(img_ori,img_syn,width=100,output=0):
     else:
         return C,lost
 
-#def obtimize_v4(sv,path_ori=os.path.abspath('./images_experiment/220304_miliq_T17.7_S73.04.png'),output=0):
-#    '''need initialize xs and losts if output==0'''
-#    start = time.time()
-#    sigma=sv[0]
-#    v0=sv[1]
-#
-#    # preprosessing the ori image
-#    ori,needle=remove_needle_centering_v5(Image.open(path_ori))
-#    pixel_needle=needle[0]
-#
-#    # gen and post processing the syn image
-#    syn_arr,wmax,rneedle=gen_doplet_v5(sigma=sigma,volume0=v0,rneedle=0.5)
-#
-#    #crop the margin of syn image
-#    syn_arr_cm=crop_margin_array_v5(syn_arr)
-#    syn=resize_syn_arr(syn_arr_cm,wmax,r_syn=1)
-#
-#    end = time.time()
-#    print('Obtimize Program execution time: ',end - start)
-#
-#    if output==0:
-#        lost=cost_v3(ori,syn,output=output)
-#        #xs.append(sv)
-#        #losts.append(lost)
-#        #print(sv,lost)
-#        return lost
-#    elif output==1:
-#        C=cost_v3(ori,syn,output=output)
-#        return C
-#    else :
-#        C,lost=cost_v3(ori,syn,output=output)
-#        return C, lost
-
 def obtimize_v5(sv,path_ori=os.path.abspath('./images_experiment/220304_miliq_T17.7_S73.04.png'),output=0,append=1):
     '''need initialize xs and losts if output==0'''
     sigma=sv[0]
@@ -266,14 +233,3 @@ def obtimize_v5(sv,path_ori=os.path.abspath('./images_experiment/220304_miliq_T1
         C,lost=cost_v3(ori,syn,output=output)
         return C, lost
 
-
-#import scipy.optimize
-## use scipy obtimaize the parameter
-#opStart=time.time()
-#xs=[]
-#losts=[]
-#x0=np.asarray((75,11))
-##sigma; v0; length_Ne,r_Ne; x,y; scaling_rate;
-#res=scipy.optimize.minimize(obtimize_v5,x0,method='nelder-mead',options={'maxiter':50})
-#opEnd=time.time()
-#print('Optimize Program Running Time: ',opEnd-opStart)
