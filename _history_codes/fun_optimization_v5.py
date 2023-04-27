@@ -1,12 +1,9 @@
 import os
-import math as m
-import time
 from fun_genSingleDrop import *
 from codes_gendrops_py.fit_circle_through_3_points import *
 import matplotlib.pyplot as plt
-import matplotlib.image as mpimg
 from matplotlib.backends.backend_agg import FigureCanvasAgg
-from fun_pre_process import *
+from fun_preprocess import *
 from PIL import Image
 import numpy as np
 
@@ -232,4 +229,5 @@ def obtimize_v5(sv,path_ori=os.path.abspath('./images_experiment/220304_miliq_T1
     else :
         C,lost=cost_v3(ori,syn,output=output)
         return C, lost
+
 

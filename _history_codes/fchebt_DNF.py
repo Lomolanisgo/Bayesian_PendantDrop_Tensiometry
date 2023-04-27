@@ -2,7 +2,7 @@
 
 import numpy as np
 import math as m
-from fcbt import *
+from fcbt_DNF import *
 from dif1D import *
 pi=m.pi
 def fchebt(y,max_order,shift_order):
