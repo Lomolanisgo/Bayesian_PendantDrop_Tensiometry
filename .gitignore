@@ -7,5 +7,6 @@ Venv/
 Used_Codes/
 images_notupload/*.png
 images_notupload/*.jpg
+images_notupload
 test.ipynb
 .DS_Store
