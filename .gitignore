@@ -10,3 +10,4 @@ images_notupload/*.jpg
 images_notupload
 test.ipynb
 .DS_Store
+*.jpg
