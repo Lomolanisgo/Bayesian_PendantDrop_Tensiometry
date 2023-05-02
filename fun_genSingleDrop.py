@@ -259,7 +259,7 @@ def genSingleDrop(sigma,volume0,rneedle,output=0,savepath='.'):
 def plt_image_needle(r_a,z_a,path,l_needle=4,sigma=0,volume0=0,rneedle=1):
     
     path=path+"/s%.2f_v%.2f_rn%.2f_ln%.2f_needle.jpg" %(sigma, volume0, rneedle,l_needle)
-    plt.figure(figsize=(4,4))
+    plt.figure(figsize=(10,10))
     plt.plot(r_a,z_a,color='black')
     plt.plot(-r_a,z_a,color='black')
     
