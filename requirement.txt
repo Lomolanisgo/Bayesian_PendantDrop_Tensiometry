@@ -6,3 +6,4 @@ opencv-python
 numba
 ipywidgets
 dill
+latex
