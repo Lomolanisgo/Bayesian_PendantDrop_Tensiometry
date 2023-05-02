@@ -6,27 +6,21 @@ import warnings
 from codes_gendrops_py.dif1D import *
 from codes_gendrops_py.fit_circle_through_3_points import *
 
-
 warnings.filterwarnings('ignore')
 
 def __init__():
    return
 
-
 def rms(y) :
         rms = np.sqrt(np.mean(y**2))
         return rms
 
-#def vmax(rneedle,sigma,deltarho=1e-3,grav=9.807e3):
-#    vmax=m.pi*(2*rneedle)*sigma/(deltarho*grav)
-#    return vmax
-
 def genSingleDrop(sigma,volume0,rneedle,output=0,savepath='.'):
     '''
     sigma: surface tension [mN/m]
-    volume0: prescribed volume in mm^3; if volume0=0, volume0=vmax
+    volume0: prescribed volume in mm^3; 
     rneedle: radius of the needle [mm]; default 1
-    output: 0-->save images, 1-->output r and z
+    output: 0-->save images in savepath, 1-->output r_a and z_a
     '''
     # physical parameters
     
@@ -43,9 +37,6 @@ def genSingleDrop(sigma,volume0,rneedle,output=0,savepath='.'):
     #Ncheb = 10;            # number of Chebyshev to describe the shape
     alpha = 0.1;            # relaxation parameter in the Newton-Raphson scheme
 
-    
-    #if volume0 == 0:
-    #   volume0 = vmax
     
     # NOTE: the calculation is done in dimensionless form, using the 
     # dimensionless surface tension sigma' and volume V'
@@ -207,46 +198,15 @@ def genSingleDrop(sigma,volume0,rneedle,output=0,savepath='.'):
       if rms(b) > 1e3:
          break; 
 
-    # calculate the Chebyshev coefficients
-    # Dont need this part to plot the drop!!!!!!!
-    # 'I am stupid!'
-    #coefr = fchebt(r,Ncheb,0); 
-    #coefz = fchebt(z,Ncheb,0); 
-
-    # compute volume and area (scaled back to dimensionfull)
-
-    #volume=round(float(np.dot(rneedle**3*pi*w,(r**2*np.sin(psi))/C)),12)
-    #area=round(float(np.dot(rneedle**2*pi*2*w,(r)/C)),12)
-    #pressure=round(float(deltarho*grav*rneedle*p0),12)
-
-    #print('volume = ', volume,' mm^3')
-    #print('area = ',area ,' mm^2')
-    #print('pressure = ',pressure ,' Pa')
-
-    # % plot the shape of the drop on the numerical grid
-    # figure; hold on
-    # scatter(rneedle*r',rneedle*z','b');
-    # plot(rneedle*r',rneedle*z','b');
-    # set(gca,'DataAspectRatio',[1 1 1])#
-    # interpolate the numerical solutions on a finer grid. 
-    # NOTE: the "right" way to interpolate is to fit a higher-orde polynomial 
-    # though all the points (see book of Trefethen on Spectral Methods in 
-    # Matlab, page  63). For plotting purposes we use a simpler interpolation 
-
-    #ss = np.linspace(s(1),s(-1),Nplot).T
-    #rr = interp1d(s,r,ss,'pchip')
-    #zz = interp1d(s,z,ss,'pchip')
-
-    #s_a=np.squeeze(s,axis=1)
     r_a=np.squeeze(r,axis=1)
     z_a=np.squeeze(z,axis=1)
-    #print('Gen Image Program execution time: ',end - start)
-    #print('single loop time is : ',time_l)
+
     if output==0:
+      r_a[-1]=0
+      z_a[-1]=0
       path=savepath+"/s%.2f_v%.2f_rn%.2f.jpg" %(sigma, volume0, rneedle)
-      plt.figure(figsize=(4,4))
-      plt.fill_between(r_a*rneedle,0,z_a*rneedle,color='black')
-      plt.fill_between(-r_a*rneedle,0,z_a*rneedle,color='black')
+      plt.figure(figsize=(10,10))
+      plt.fill(-r_a*rneedle,z_a*rneedle,r_a*rneedle,z_a*rneedle,color='black')
       plt.axis('equal')
       plt.axis('off')
       plt.savefig(path,bbox_inches='tight',pad_inches=0.0)
@@ -257,7 +217,12 @@ def genSingleDrop(sigma,volume0,rneedle,output=0,savepath='.'):
 
 
 def plt_image_needle(r_a,z_a,path,l_needle=4,sigma=0,volume0=0,rneedle=1):
-    
+    '''
+    Use this function to generate the image with needle;
+    r_a and z_a from the output of genSingleDrop (output=1); 
+    l_needle is the length of the needle;
+    sigma, volume0 and rneedle is only used to name the image.
+    '''
     path=path+"/s%.2f_v%.2f_rn%.2f_ln%.2f_needle.jpg" %(sigma, volume0, rneedle,l_needle)
     plt.figure(figsize=(10,10))
     plt.plot(r_a,z_a,color='black')
@@ -265,8 +230,7 @@ def plt_image_needle(r_a,z_a,path,l_needle=4,sigma=0,volume0=0,rneedle=1):
     
     plt.fill_between(r_a,l_needle,0,color='black')
     plt.fill_between(-r_a,l_needle,0,color='black')
-    plt.fill_between(r_a,0,z_a,color='black')
-    plt.fill_between(-r_a,0,z_a,color='black')
+    plt.fill(-r_a,z_a,r_a,z_a,color='black')
 
     plt.axis('equal')
     plt.axis('off')
