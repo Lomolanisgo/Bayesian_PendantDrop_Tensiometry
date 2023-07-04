@@ -11,10 +11,8 @@ images_notupload
 test.ipynb
 .DS_Store
 *.jpg
-Opti_Result_RV_s73.04_IG_s59.00_v3.00.png
-Opti_Result_RV_s73.04_IG_s68.00_v9.00.png
-Opti_Result_RV_s73.04_IG_s70.00_v15.00.png
-Opti_Result_RV_s73.04_IG_s74.00_v22.00.png
+*.png
 data_output/
 tutorial.ipynb
 images_paper/
+SavedResult/
