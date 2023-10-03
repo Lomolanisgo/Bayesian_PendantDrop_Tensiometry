@@ -17,16 +17,20 @@ def rms(y) :
 
 def genSingleDrop(sigma,volume0,rneedle,output=0,savepath='.'):
     '''
+    INPUT
     sigma: surface tension [mN/m]
     volume0: prescribed volume in mm^3; 
     rneedle: radius of the needle [mm]; default 1
-    output: 0-->save images in savepath, 1-->output r_a and z_a
-    '''
-    # physical parameters
     
-    #sigma = 100;           # surface tension [mN/m]
-    #rneedle = 1;           # radius of the needle [mm]
-    #volume0 = 32;          # prescribed volume in mm^3
+    OUTPUT
+    if output==0: save images in savepath
+    else: return the points coordinates r_a and z_a
+    '''
+
+    # physical parameters
+    sigma = sigma;          # surface tension [mN/m]
+    rneedle = rneedle;      # radius of the needle [mm]
+    volume0 = volume0;      # prescribed volume in mm^3
     grav = 9.807e3;         # gravitational acceleration [mm/s^2]
     deltarho = 1e-3;        # density difference [10^6 kg/m^3]
     pi=m.pi
@@ -99,8 +103,6 @@ def genSingleDrop(sigma,volume0,rneedle,output=0,savepath='.'):
         # get the differentation/integration matrices and the grid
         D,_,w,s = dif1D('cheb',0,smax,N,5)
 
-
-
     # initialize some variables 
     Z = np.zeros((N,N));                    # matrix filled with zeros
     IDL = np.hstack((1, np.zeros((N-1))));  # line with single one and rest zeros
@@ -117,15 +119,15 @@ def genSingleDrop(sigma,volume0,rneedle,output=0,savepath='.'):
         print('iter > 1200!')
         break
       
-      #if rms(u) < 1e-10:
-      #  break
-      # determine r from psi
-      #start_l=time.time()
-      
+      if rms(u) < 1e-10:
+        break
+
+      # determine r from psi      
       A11 = C*D; 
       A13 = np.diag(np.squeeze(np.sin(psi)))
       A18 = np.dot(D,r); 
       b1 = -(C*np.dot(D,r)-np.cos(psi))
+
       # determine z from psi 
       A22 = C*D; 
       A23 = np.diag(np.squeeze(-np.cos(psi))); 
@@ -133,7 +135,6 @@ def genSingleDrop(sigma,volume0,rneedle,output=0,savepath='.'):
       b2 = -(C*np.dot(D,z)-np.sin(psi))
 
       # determine psi from Laplace law
-
       A31 = -sigmaprime*np.diag(np.squeeze(np.sin(psi)/r**2))
       A32 = np.diag(np.squeeze(np.ones(N)))
       A33 = C*sigmaprime*D + sigmaprime*np.diag(np.squeeze(np.cos(psi)/r))
@@ -147,7 +148,7 @@ def genSingleDrop(sigma,volume0,rneedle,output=0,savepath='.'):
       A81 = np.flip(IDL).reshape(1,N); 
       b8 = (1-r[-1])
 
-        # determine pressure - use volume
+      # determine pressure - use volume
       A91 = 2*w*r.T*np.sin(psi.T)
       A93 = w*r.T**2*np.cos(psi.T)
       A98 = np.array(-volume0prime/m.pi).reshape(1,1)
@@ -214,7 +215,6 @@ def genSingleDrop(sigma,volume0,rneedle,output=0,savepath='.'):
       return path
     else:
       return r_a,z_a
-
 
 def plt_image_needle(r_a,z_a,path,l_needle=4,sigma=0,volume0=0,rneedle=1):
     '''
