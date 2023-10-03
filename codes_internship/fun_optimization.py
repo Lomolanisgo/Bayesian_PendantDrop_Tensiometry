@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from fun_genSingleDrop import *
-from fun_preprocess import *
+from codes_internship.fun_preprocess import *
 from matplotlib.backends.backend_agg import FigureCanvasAgg
 
 # Step 1: Remove the needle and centering the experimental (exp) image. 
